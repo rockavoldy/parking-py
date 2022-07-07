@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "44f528fc63b71071b40ec5ad86b8527e39d991822bda94756426f8a888b9893a"
+            "sha256": "cf236d3f061754dd459214e8409a28271ab7766e21f981b848bb1238affb0866"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -30,6 +30,21 @@
             ],
             "index": "pypi",
             "version": "==1.6.2"
+        },
+        "i2clcd": {
+            "hashes": [
+                "sha256:76f383e13984f8492be5a8db5a14d16f8dc3f87a8636771b50e035c81fb29bbc",
+                "sha256:f1ad7cb9a9478a659daf6b7e042825996dd8eac76f3233de5be517f4a59f7829"
+            ],
+            "index": "pypi",
+            "version": "==0.0.1"
+        },
+        "libevdev": {
+            "hashes": [
+                "sha256:e9ca006a4df2488a60bd9a740011ee948d81904be2364f017e560169508f560f"
+            ],
+            "index": "pypi",
+            "version": "==0.11"
         },
         "paho-mqtt": {
             "hashes": [

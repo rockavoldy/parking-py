@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 gpiozero = "*"
 paho-mqtt = "*"
+libevdev = "*"
+i2clcd = "*"
 
 [dev-packages]
 
