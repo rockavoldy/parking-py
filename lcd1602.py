@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import i2clcd
+import time
 
 
 class LCD1602():
@@ -15,15 +16,23 @@ class LCD1602():
 
     def print_message(self, msg=None) -> bool:
         """ Print message to the LCD
+            if message below 16 characters, print message as static
+            if message above 16 characters, print message as running text
             params msg str: message to be printed 
             return bool: True if success else False 
         """
         if not msg:
             return False
-        
-        # TODO: validate the length of message; make sure it fit. 
-        # When the message can't fit the width of lcd, make the message rolling on that line only
-        self._lcd.print_line(msg, line=0)
+
+        if len(msg) < 16:
+            self._lcd.print_line(msg, 0)
+            return True
+
+        self._lcd.shift(direction='LEFT', move_display=True)
+        self._lcd.move_cursor(0, 0)
+        self._lcd.print(msg)
+        # add delay, easier to read
+        time.sleep(0.13)
 
         return True
 
@@ -36,7 +45,7 @@ class LCD1602():
             params: gate bool: 0 for gate entry, 1 for gate exit
          """
          # TODO: make this customizable, for the gate entry and gate exit
-        self.print_message("Terima kasih")
+        self.print_message("Terima kasih atas kunjungan anda boooiii")
 
     def waiting_payment_message(self):
         """ Waiting for Payment message """
