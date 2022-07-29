@@ -1,5 +1,14 @@
 # Parking Py
 
+## How to run the project
+1. Install [pyenv](https://github.com/pyenv/pyenv)
+2. Install python 3.8.13 using pyenv `pyenv install 3.8.13`
+3. Create virtualenv using pyenv `pyenv virtualenv 3.8.13 parking`
+4. Activate virtualenv `pyenv activate parking`
+5. Confirm the python version using `python --version`
+6. Install `requirements.txt` with pip `pip install -r requirements.txt`
+7. Run main.py
+
 ## Some notes on the design
 ### Dashboard and communication
 1. All communication use MQTT
@@ -17,8 +26,10 @@
 | RPi | Module | Notes |
 | -- | ---- | --- |
 | GPIO2 (I2C SDA) | LCD DATA | LCD 1602 |
-| GPIO3 (I2C SCL) | LCD CLOCK | LCD1602 |
+| GPIO3 (I2C SCL) | LCD CLOCK | LCD 1602 |
 | GPIO17 | TRIG | Ultrasonic |
 | GPIO27 | ECHO | Ultrasonic |
+| GPIO14 | TX | Gate Serial |
+| GPIO15 | RX | Gate Serial |
 
 > **Notes**: Ultrasonic and LCD use the same 5V

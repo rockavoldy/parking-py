@@ -48,5 +48,21 @@ class Ultrasonic():
         # time difference when sound is traveling through air
         time_passed = stop_time - start_time
         # multiply with how fast sound traveled through the air (roughly 343m/s)
-        # and divide by 2 to know the distance of the object
-        return (time_passed * self._sound_speed) / 2
+        # and divide by 2 to know the distance of the object in cm
+        return round((time_passed * self._sound_speed) / 2, 2)
+
+    def is_vehicle_pass(self) -> bool:
+        """ Check if vehicle is passing the sensor """
+        start_time = time.time()
+        
+        exit_condition = False
+        while not exit_condition:
+            if self.distance() < 120:
+                return True
+
+            end_time = time.time()
+            if int(end_time - start_time) > 30:
+                # when it's already 30 seconds, just force it to close the gate then
+                return True
+
+        return False

@@ -19,6 +19,10 @@ class Mqtt():
 
     def on_message(self, client, userdata, msg):
         print(msg.topic+" "+str(msg.payload))
+        return {
+            'topic': msg.topic,
+            'payload': str(msg.payload)
+        }
 
     # publish local command; should be used to send local command 
     # (open gate; start scanning QR; start checking if vehicle already passing the gate or not, and such)
@@ -48,6 +52,8 @@ class Mqtt():
         """
         # NOTE: there is no target here, because command formatted by this method 
         # should be consumed by dashboard
+        # NOTE: expired time; only used on checkout, if time_now > expired
+        # don't open the gate and print (check your phone again)
 
         timestamp = self._get_ms_timestamp()
         return "{};{};{};{}".format(machine_id, command, data, timestamp)

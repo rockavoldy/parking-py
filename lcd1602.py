@@ -45,7 +45,11 @@ class LCD1602():
             params: gate bool: 0 for gate entry, 1 for gate exit
          """
          # TODO: make this customizable, for the gate entry and gate exit
-        self.print_message("Terima kasih atas kunjungan anda boooiii")
+        self.print_message("Terima kasih atas kunjungan anda!")
+
+    def expired_message(self):
+        """ Expired message """
+        self.print_message("Waktu pembayaran anda telah habis!")
 
     def waiting_payment_message(self):
         """ Waiting for Payment message """
