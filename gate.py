@@ -10,6 +10,8 @@ class Gate:
     
     def open_gate(self):
         self.se.write(1)
+        print("open gate")
 
     def close_gate(self):
         self.se.write(0)
+        print("close gate")

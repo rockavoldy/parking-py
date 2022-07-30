@@ -1,7 +1,10 @@
 colorzero==2.0
+future==0.18.2
 gpiozero==1.6.2
 i2clcd==0.0.1
+iso8601==1.0.2
 libevdev==0.11
 paho-mqtt==1.6.1
-setuptools==62.6.0
-pyserial==3.5
+pytz==2022.1
+PyYAML==6.0
+serial==0.0.97

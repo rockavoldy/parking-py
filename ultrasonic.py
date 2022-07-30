@@ -57,7 +57,9 @@ class Ultrasonic():
         
         exit_condition = False
         while not exit_condition:
-            if self.distance() < 120:
+            distance = self.distance()
+            print(distance)
+            if distance < 120:
                 return True
 
             end_time = time.time()

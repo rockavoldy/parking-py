@@ -3,6 +3,7 @@ from lcd1602 import LCD1602
 from ultrasonic import Ultrasonic
 from mqtt import Mqtt
 from gate import Gate
+from helper import Helper
 
 class Main():
     def __init__(self):
@@ -18,16 +19,33 @@ class Main():
         while True:
             # 1. print waiting for QR Scan message
             lcd.waiting_message()
-            # 2. read QR Code
             scanned_string = usb_scanner.readQRCode()
             print(scanned_string)
-            # 3. TODO: publish data to mqtt topic
-            # 4. print message selamat datang
-            lcd.scan_success_message()
-            # 5. TODO: open gate parking
-            gate.open_gate()
-            # 6. activate ultrasonic to scan if vehicle is already passing the gate
-            # 7. when vehicle passing the gate, loop to first step
+
+            # take scanned string > check the command (checkin, checkout)
+            # if checkin, just directly open the gate, 
+            # if checkout, check expired time first before open the gate
+            # when checkout and expired time > time_now, print expired message
+            json_data = Helper.parse_json_qrcode(scanned_string)
+            if json_data['parking_type'] == "checkin":
+                # TODO: publish data to mqtt topic
+                # print message selamat datang
+                lcd.scan_success_message(gate=0)
+                # open gate parking
+                gate.open_gate()
+            else:
+                expired_time = Helper.parse_datetime(json_data['expired'])
+                if Helper.parse_to_timestamp(expired_time) > Helper.parse_to_timestamp():
+                    # When expired time is more than current time, print expired message
+                    lcd.expired_message()
+                    time.sleep(1)
+                    # and continue to first step waiting for QR Scan
+                    continue
+
+                lcd.scan_success_message(gate=1)
+                gate.open_gate()
+
+            # when vehicle passing the gate, loop to first step
             if is_vehicle_pass():
                 gate.close_gate()
             

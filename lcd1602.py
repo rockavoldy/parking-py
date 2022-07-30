@@ -43,13 +43,15 @@ class LCD1602():
     def scan_success_message(self, gate=0):
         """ Scan success message
             params: gate bool: 0 for gate entry, 1 for gate exit
-         """
-         # TODO: make this customizable, for the gate entry and gate exit
-        self.print_message("Terima kasih atas kunjungan anda!")
+        """
+        if gate == 0:
+            self.print_message("Selamat datang!")
+        else:
+            self.print_message("Terima kasih atas kunjungan anda!")
 
     def expired_message(self):
         """ Expired message """
-        self.print_message("Waktu pembayaran anda telah habis!")
+        self.print_message("Waktu pembayaran anda telah habis!, Silahkan ikuti instruksi di HP anda!")
 
     def waiting_payment_message(self):
         """ Waiting for Payment message """
