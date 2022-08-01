@@ -8,3 +8,5 @@ paho-mqtt==1.6.1
 pytz==2022.1
 PyYAML==6.0
 serial==0.0.97
+smbus==1.1.post2
+pigpio==1.78

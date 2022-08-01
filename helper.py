@@ -34,6 +34,7 @@
 from datetime import datetime, tzinfo
 from time import time
 from pytz import timezone
+import json
 
 DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 TZJAKARTA = timezone("Asia/Jakarta")
@@ -44,12 +45,14 @@ class Helper:
         """ Validate and parse json data to python dict """
         if not json_data:
             return False
+
+        json_obj = json.loads(json_data)
         
         return {
-            "code": json_data.get('code', False),
-            "expired": json_data.get('expired', False),
-            "parking_type": json_data.get('parking_type', False),
-            "user_id": json_data.get('user_id', False),
+            "code": json_obj.get('code', False),
+            "expired": json_obj.get('expired', False),
+            "parking_type": json_obj.get('parking_type', False),
+            "user_id": json_obj.get('user_id', False),
         }
 
     @staticmethod
@@ -57,7 +60,7 @@ class Helper:
         """ Format data to json format """
         if isinstance(data['timestamp'], int):
             
-            data['timestamp'] = datetime().fromtimestamp(data['timestamp'], tz=TZJAKARTA).strftime(DATETIME_FMT)
+            data['timestamp'] = datetime.fromtimestamp(data['timestamp']/1000, tz=TZJAKARTA).strftime(DATETIME_FMT)
             
         return json.dumps(data)
 
@@ -65,7 +68,7 @@ class Helper:
     def parse_to_timestamp(datetime_fmt):
         """ will throw datetime.now() when parameter not filled """
         if not datetime_fmt:
-            datetime_fmt = datetime().fromtimestamp(time(), tz=TZJAKARTA)
+            datetime_fmt = datetime.fromtimestamp(time(), tz=TZJAKARTA)
         
         if isinstance(datetime_fmt, str):
             datetime_fmt = Helper.parse_datetime(datetime_fmt)

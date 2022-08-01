@@ -16,8 +16,10 @@ class Ultrasonic():
         
         self._trigger = OutputDevice(trigger_pin, pin_factory=pin_factory, initial_value=False)
         self._echo = InputDevice(echo_pin, pin_factory=pin_factory, pull_up=False)
+        # NOTE: better to pull-down the echo pin, to prevent some noise from using the same VCC pin
         self._sound_speed = 34300
-        # self.sensor = DistanceSensor(echo=echo_pin, trigger=trigger_pin)
+        # when it detect distance below this threshold, means vehicle is passing the gate
+        self._distance_threshold = 140
     
     def set_sound_speed(self, sound_speed=34300):
         """ Sound speed traveling through the air is around 343m/s (on 20°C), 
@@ -25,6 +27,12 @@ class Ultrasonic():
             (most of the time, it's not needed)
         """
         self._sound_speed = sound_speed
+
+    def set_distance_threshold(self, distance_threshold=140):
+        """ Set distance threshold for detecting vehicle passing the sensor
+            params distance_threshold int: distance threshold on centimeter
+        """
+        self._distance_threshold = distance_threshold
 
     def distance(self) -> int:
         """ Get distance from sensor to object """

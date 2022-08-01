@@ -10,7 +10,7 @@ class Mqtt():
 
         if username and password:
             # When username and password set, connect to mqtt with username and password
-            host = f"{username}:{password}@{host}"
+            self.client.username_pw_set(username, password)
 
         self.client.connect(host=host, port=port, keepalive=keepalive)
 
@@ -50,7 +50,7 @@ class Mqtt():
     def publish_command(self, machine_id, command, data):
         msg = self.format_command(machine_id, command, data)
         msg = Helper.format_json_mqtt(msg)
-        self.publish("parking/machine/command", msg=msg, qos=2)
+        self.publish("parking/machine/command", msg=msg, qos=0)
     
     # status message; can be used locally, and remotely
     def format_status_message(self, machine_id, status):

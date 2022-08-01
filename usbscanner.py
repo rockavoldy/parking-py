@@ -38,28 +38,31 @@ class USBScanner():
         scanned_string = ""
         caps = False
         while True:
-            for event in self.device.events():
-                # cast event.code to int, to get the keycode
-                event_code = int(event.code)
+            try:
+                for event in self.device.events():
+                    # cast event.code to int, to get the keycode
+                    event_code = int(event.code)
 
-                # Handle uppercase when event_code = LSHIFT
-                # Set caps True and continue to the next keycode
-                if event_code == 42:
+                    # Handle uppercase when event_code = LSHIFT
+                    # Set caps True and continue to the next keycode
+                    if event_code == 42:
+                        if event.matches(libevdev.EV_KEY, 1):
+                            caps = True
+                        else:
+                            caps = False
+
                     if event.matches(libevdev.EV_KEY, 1):
-                        caps = True
-                    else:
-                        caps = False
+                        if caps:
+                            key_lookup = self._capscodes[event_code]
+                        else:
+                            key_lookup = self._scancodes[event_code]
 
-                if event.matches(libevdev.EV_KEY, 1):
-                    if caps:
-                        key_lookup = self._capscodes[event_code]
-                    else:
-                        key_lookup = self._scancodes[event_code]
-
-                    if event_code not in [28, 42]:
-                        scanned_string += key_lookup
-                    elif event_code == 28:
-                        # self.device.ungrab()
-                        return scanned_string
+                        if event_code not in [28, 42]:
+                            scanned_string += key_lookup
+                        elif event_code == 28:
+                            # self.device.ungrab()
+                            return scanned_string
+            except Exception as e:
+                print(e)
 
         return None
