@@ -1,11 +1,16 @@
 import paho.mqtt.client as mqtt
 import time
+from helper import Helper
 
 class Mqtt():
-    def __init__(self, host='localhost', port=1883, keepalive=60):
+    def __init__(self, host='localhost', port=1883, keepalive=60, username=None, password=None):
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
+
+        if username and password:
+            # When username and password set, connect to mqtt with username and password
+            host = f"{username}:{password}@{host}"
 
         self.client.connect(host=host, port=port, keepalive=keepalive)
 
@@ -14,38 +19,17 @@ class Mqtt():
         self.subscribe("#/SYS", 0)
         self.subscribe("parking/machine/status", 0)
         self.subscribe("parking/machine/command", 2)
-        self.subscribe("local/machine/status", 0)
-        self.subscribe("local/machine/command", 2)
 
     def on_message(self, client, userdata, msg):
+        # since there is no message from web, only publish-publish-publish, this method
+        # won't be used, just print here for debug
         print(msg.topic+" "+str(msg.payload))
-        return {
-            'topic': msg.topic,
-            'payload': str(msg.payload)
-        }
-
-    # publish local command; should be used to send local command 
-    # (open gate; start scanning QR; start checking if vehicle already passing the gate or not, and such)
-    def format_local_command(self, machine_id, command, target):
-        """ Format local command to "machine_id;command;target;timestamp"
-            params: machine_id str: The unique ID to know which machine this command from
-            params: command str: what command published
-            params: target str: target for the command to be run; for what process
-
-            return: formatted string delimited by ; (semi-colon)
-        """
-        timestamp = self._get_ms_timestamp()
-        return "{};{};{};{}".format(machine_id, command, target, timestamp)
-
-    def publish_local_command(self, machine_id, command, target):
-        msg = self.format_local_command(machine_id, command, target)
-        self.publish("local/machine/command", msg=msg, qos=2)
     
     # publish command; should be used to send data from the machine to dashboard
     def format_command(self, machine_id, command, data):
         """ Format local command to "machine_id;command;timestamp"
             params: machine_id str: The unique ID to know which machine this command from
-            params: command str: what command published
+            params: command str: what command published; checkin OR checkout
             params: data str: data from scanned QR; to be saved to the db later
 
             return: formatted string delimited by ; (semi-colon)
@@ -56,10 +40,16 @@ class Mqtt():
         # don't open the gate and print (check your phone again)
 
         timestamp = self._get_ms_timestamp()
-        return "{};{};{};{}".format(machine_id, command, data, timestamp)
+        return {
+            'machine_id': machine_id,
+            'command': command, # checkin, checkout
+            'data': data, # data from QRIS
+            'timestamp': timestamp,
+        }
 
     def publish_command(self, machine_id, command, data):
         msg = self.format_command(machine_id, command, data)
+        msg = Helper.format_json_mqtt(msg)
         self.publish("parking/machine/command", msg=msg, qos=2)
     
     # status message; can be used locally, and remotely

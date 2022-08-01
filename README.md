@@ -32,4 +32,4 @@
 | GPIO14 | TX | Gate Serial |
 | GPIO15 | RX | Gate Serial |
 
-> **Notes**: Ultrasonic and LCD use the same 5V
+> **Notes**: Ultrasonic and LCD use the same 5V, i think it give some noise to Ultrasonic, that's why it's not reliable... better to use separate power for it

@@ -5,6 +5,8 @@ from mqtt import Mqtt
 from gate import Gate
 from helper import Helper
 
+MACHINE_ID = "TEST01"
+
 class Main():
     def __init__(self):
         lcd = LCD1602()
@@ -16,6 +18,7 @@ class Main():
         # Gate take device_path too, but since it's only 1 device_path
         # i think it's ok to use the default one /dev/ttyAMA0
         gate = Gate()
+        mqtt = Mqtt(host="api.akhmad.id", port=1883, keepalive=60, username="testparking", password="123456")
         while True:
             # 1. print waiting for QR Scan message
             lcd.waiting_message()
@@ -28,7 +31,7 @@ class Main():
             # when checkout and expired time > time_now, print expired message
             json_data = Helper.parse_json_qrcode(scanned_string)
             if json_data['parking_type'] == "checkin":
-                # TODO: publish data to mqtt topic
+                mqtt.publish_command(MACHINE_ID, "checkin", json_data)
                 # print message selamat datang
                 lcd.scan_success_message(gate=0)
                 # open gate parking
@@ -43,6 +46,7 @@ class Main():
                     continue
 
                 lcd.scan_success_message(gate=1)
+                mqtt.publish_command(MACHINE_ID, "checkout", json_data)
                 gate.open_gate()
 
             # when vehicle passing the gate, loop to first step
