@@ -4,6 +4,8 @@ from ultrasonic import Ultrasonic
 from mqtt import Mqtt
 from gate import Gate
 from helper import Helper
+
+from time import time
 import base64
 
 MACHINE_ID = "TEST01"
@@ -33,24 +35,30 @@ class Main():
             # when checkout and expired time > time_now, print expired message
             json_data = Helper.parse_json_qrcode(scanned_string)
             if json_data['parking_type'] == "checkin":
-                mqtt.publish_command(MACHINE_ID, "checkin", json_data)
+                mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
                 # print message selamat datang
                 lcd.scan_success_message(gate=0)
                 # open gate parking
                 print("checkin success")
                 gate.open_gate()
+            elif json_data['parking_type'] == "recheckin":
+                mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
+                # print message selamat datang
+                lcd.scan_success_message(gate=0)
+                print("recheckin success")
+                continue
             else:
                 expired_time = Helper.parse_datetime(json_data['expired'])
-                if Helper.parse_to_timestamp(expired_time) > Helper.parse_to_timestamp():
+                if Helper.parse_to_timestamp(date=expired_time) < Helper.parse_to_timestamp():
                     # When expired time is more than current time, print expired message
                     lcd.expired_message()
                     print("expired")
-                    time.sleep(1)
+                    time.sleep(5)
                     # and continue to first step waiting for QR Scan
                     continue
 
                 lcd.scan_success_message(gate=1)
-                mqtt.publish_command(MACHINE_ID, "checkout", json_data)
+                mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
                 print("checkout success")
                 gate.open_gate()
 

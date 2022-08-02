@@ -10,3 +10,4 @@ PyYAML==6.0
 serial==0.0.97
 smbus==1.1.post2
 pigpio==1.78
+pyserial==3.5

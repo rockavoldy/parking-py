@@ -31,7 +31,7 @@
 }
 """
 
-from datetime import datetime, tzinfo
+from datetime import datetime, tzinfo, timedelta
 from time import time
 from pytz import timezone
 import json
@@ -61,17 +61,21 @@ class Helper:
         if isinstance(data['timestamp'], int):
             
             data['timestamp'] = datetime.fromtimestamp(data['timestamp']/1000, tz=TZJAKARTA).strftime(DATETIME_FMT)
+            data["vehicle_id"] = 1
+            data["parking_location_id"] = 1
             
         return json.dumps(data)
 
     @staticmethod
-    def parse_to_timestamp(datetime_fmt):
+    def parse_to_timestamp(date=datetime_fmt):
         """ will throw datetime.now() when parameter not filled """
         if not datetime_fmt:
-            datetime_fmt = datetime.fromtimestamp(time(), tz=TZJAKARTA)
+            datetime_fmt = datetime.fromtimestamp(time())
         
         if isinstance(datetime_fmt, str):
             datetime_fmt = Helper.parse_datetime(datetime_fmt)
+
+        datetime_fmt = datetime_fmt + timedelta(hours=7)
 
         return datetime_fmt.timestamp()
 
