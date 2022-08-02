@@ -4,6 +4,10 @@
 ```shell
 sudo apt-get install python3-pip python3-dev make gcc libevdev-dev i2c-tools libi2c-dev -y
 ```
+Disable bluetooth, by adding below script to the bottom of `config.txt`
+```shell
+dtoverlay=disable-bt
+```
 ## How to run the project
 1. Install [pyenv](https://github.com/pyenv/pyenv)
 2. Install python 3.8.13 using pyenv `pyenv install 3.8.13`
