@@ -5,7 +5,7 @@ from mqtt import Mqtt
 from gate import Gate
 from helper import Helper
 
-from time import time
+import time
 import base64
 
 MACHINE_ID = "TEST01"

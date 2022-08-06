@@ -67,17 +67,17 @@ class Helper:
         return json.dumps(data)
 
     @staticmethod
-    def parse_to_timestamp(date=datetime_fmt):
+    def parse_to_timestamp(date=False):
         """ will throw datetime.now() when parameter not filled """
-        if not datetime_fmt:
-            datetime_fmt = datetime.fromtimestamp(time())
+        if not date:
+            date = datetime.fromtimestamp(time())
         
-        if isinstance(datetime_fmt, str):
-            datetime_fmt = Helper.parse_datetime(datetime_fmt)
+        if isinstance(date, str):
+            date = Helper.parse_datetime(date)
 
-        datetime_fmt = datetime_fmt + timedelta(hours=7)
+        date = date + timedelta(hours=7)
 
-        return datetime_fmt.timestamp()
+        return date.timestamp()
 
     @staticmethod
     def parse_datetime(datetime_str):
