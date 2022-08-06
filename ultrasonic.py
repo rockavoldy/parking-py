@@ -64,15 +64,23 @@ class Ultrasonic():
         start_time = time.time()
         
         exit_condition = False
+        start_time = False
+        end_time = False
         while not exit_condition:
             distance = self.distance()
-            print(distance)
-            if distance < 120:
-                return True
+            if distance < self._distance_threshold and not start_time:
+                # set start time
+                start_time = time.time()
+                print(distance)
 
+            elif distance > self._distance_threshold and start_time:
+                # when start time is set, 
+                # and distance is above threshold (means vehicle is already pass), 
+                # return True
+                return True
             end_time = time.time()
+
             if int(end_time - start_time) > 30:
                 # when it's already 30 seconds, just force it to close the gate then
                 return True
-
-        return False
+            time.sleep(1)

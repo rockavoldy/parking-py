@@ -50,7 +50,7 @@ class Mqtt():
     def publish_command(self, machine_id, command, data):
         msg = self.format_command(machine_id, command, data)
         msg = Helper.format_json_mqtt(msg)
-        self.publish("parking/machine/command", msg=msg, qos=0)
+        self.publish("parking/machine/command", msg=msg, qos=1)
     
     # status message; can be used locally, and remotely
     def format_status_message(self, machine_id, status):
