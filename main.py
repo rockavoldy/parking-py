@@ -27,7 +27,7 @@ class GateEntry():
         usb_scanner = USBScanner(device_path)
         # Gate take device_path too, but since it's only 1 device_path
         # i think it's ok to use the default one /dev/ttyAMA0
-        gate = Gate()
+        # gate = Gate()
         print("Parking IoT start")
         mqtt = Mqtt(host="172.104.182.166", port=1883, keepalive=60, username="testparking", password="123456")
         while True:
@@ -81,6 +81,15 @@ class GateExit():
                 json_data = Helper.parse_json_qrcode(scanned_string)
                 if json_data['parking_type'] not in ['recheckin', 'checkout']:
                     continue
+                else:
+                    expired_time = Helper.parse_datetime(json_data['expired'])
+                    if Helper.parse_to_timestamp(date=expired_time) < Helper.parse_to_timestamp():
+                        # When expired time is more than current time, print expired message
+                        lcd.expired_message()
+                        print("expired")
+                        time.sleep(5)
+                        # and continue to first step waiting for QR Scan
+                        continue
 
                 if json_data['parking_type'] == 'recheckin':
                     mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)

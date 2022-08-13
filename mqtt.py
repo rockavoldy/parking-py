@@ -51,13 +51,7 @@ class Mqtt():
         msg = Helper.format_json_mqtt(msg)
 
         res = self.publish("parking/machine/command", msg=msg, qos=1)
-        print(res)
         print(res.rc)
-        print("is success", res.rc == mqtt.MQTT_ERR_SUCCESS)
-        print('is no connec', res.rc == mqtt.MQTT_ERR_NO_CONN)
-        print('mqtt err no queue', res.rc == mqtt.MQTT_ERR_QUEUE_SIZE)
-        print(res.is_published)
-        print(res.mid)
     
     # status message; can be used locally, and remotely
     def format_status_message(self, machine_id, status):

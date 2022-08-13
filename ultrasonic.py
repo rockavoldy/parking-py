@@ -82,4 +82,4 @@ class Ultrasonic():
                 return True
             time.sleep(1)
 
-        return False
+        return True
