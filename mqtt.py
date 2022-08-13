@@ -16,9 +16,8 @@ class Mqtt():
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code: "+str(rc))
-        self.subscribe("#/SYS", 0)
         self.subscribe("parking/machine/status", 0)
-        self.subscribe("parking/machine/command", 2)
+        self.subscribe("parking/machine/command", 0)
 
     def on_message(self, client, userdata, msg):
         # since there is no message from web, only publish-publish-publish, this method
@@ -50,7 +49,15 @@ class Mqtt():
     def publish_command(self, machine_id, command, data):
         msg = self.format_command(machine_id, command, data)
         msg = Helper.format_json_mqtt(msg)
-        self.publish("parking/machine/command", msg=msg, qos=0)
+
+        res = self.publish("parking/machine/command", msg=msg, qos=1)
+        print(res)
+        print(res.rc)
+        print("is success", res.rc == mqtt.MQTT_ERR_SUCCESS)
+        print('is no connec', res.rc == mqtt.MQTT_ERR_NO_CONN)
+        print('mqtt err no queue', res.rc == mqtt.MQTT_ERR_QUEUE_SIZE)
+        print(res.is_published)
+        print(res.mid)
     
     # status message; can be used locally, and remotely
     def format_status_message(self, machine_id, status):
@@ -70,7 +77,8 @@ class Mqtt():
         self.client.subscribe(channel)
     
     def publish(self, topic, msg=None, qos=0, retain=False):
-        self.client.publish(topic, payload=msg, qos=qos, retain=retain)
+        self.client.reconnect()
+        return self.client.publish(topic, payload=msg, qos=qos, retain=retain)
 
     def _get_ms_timestamp(self):
         # return timestamp in milliseconds

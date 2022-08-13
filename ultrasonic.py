@@ -20,6 +20,7 @@ class Ultrasonic():
         self._sound_speed = 34300
         # when it detect distance below this threshold, means vehicle is passing the gate
         self._distance_threshold = 140
+        print("initialize ultra")
     
     def set_sound_speed(self, sound_speed=34300):
         """ Sound speed traveling through the air is around 343m/s (on 20°C), 
@@ -64,15 +65,21 @@ class Ultrasonic():
         start_time = time.time()
         
         exit_condition = False
+        start_time = False
+        end_time = False
         while not exit_condition:
             distance = self.distance()
-            print(distance)
-            if distance < 120:
+            if distance < self._distance_threshold and not start_time:
+                start_time = time.time()
+                print(distance)
+
+            elif distance > self._distance_threshold and start_time:
+                end_time = time.time()
                 return True
 
-            end_time = time.time()
             if int(end_time - start_time) > 30:
                 # when it's already 30 seconds, just force it to close the gate then
                 return True
+            time.sleep(1)
 
         return False
