@@ -83,7 +83,7 @@ class GateExit():
                     continue
                 else:
                     expired_time = Helper.parse_datetime(json_data['expired'])
-                    if Helper.parse_to_timestamp(date=expired_time) < Helper.parse_to_timestamp():
+                    if Helper.parse_to_timestamp(date=expired_time) > Helper.parse_to_timestamp():
                         # When expired time is more than current time, print expired message
                         lcd.expired_message()
                         print("expired")
