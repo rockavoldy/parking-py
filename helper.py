@@ -86,3 +86,7 @@ class Helper:
             return False
 
         return datetime.strptime(datetime_str, DATETIME_FMT)
+
+    @staticmethod
+    def log_print(message):
+        print(f"{datetime.now(timezone('Asia/Jakarta')).strftime('%Y-%m-%d %H:%M:%S')}: {message}")
