@@ -26,13 +26,12 @@ class Main():
         self.mqtt = Mqtt(host="172.104.182.166", port=1883, keepalive=60, username="testparking", password="123456")
         self.db = DB("scanned.db")
 
-        # uncomment one of initialization below to choose between gate entry and exit
         Helper.log_print("initilaize gate")
-        # GateEntry()
-        # GateExit()
-            
-class GateEntry():
-    def __init__(self):
+        # uncomment one of initialization below to choose between gate entry and exit
+        # self.gate_entry()
+        # self.gate_exit()
+
+    def gate_entry(self):
         while True:
             # 1. print waiting for QR Scan message
             self.lcd.waiting_message()
@@ -58,9 +57,8 @@ class GateEntry():
                     self.gate.close_gate()
             except Exception as e:
                 Helper.log_print(e)
-
-class GateExit():
-    def __init__(self):
+    
+    def gate_exit(self):
         while True:
             # 1. print waiting for QR Scan message
             self.lcd.waiting_message()
