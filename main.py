@@ -34,6 +34,7 @@ class Main():
             # 1. print waiting for QR Scan message
             self.lcd.waiting_message()
             try:
+                Helper.log_print("Waiting for QR")
                 scanned_string = self.usb_scanner.readQRCode()
                 scanned_string = base64.b64decode(scanned_string)
                 # take scanned string > check the command (checkin, checkout)
@@ -46,12 +47,12 @@ class Main():
                 # print message selamat datang
                 self.lcd.scan_success_message(gate=0)
                 # open gate parking
-                Helper.log_print("checkin success")
+                Helper.log_print("Checkin success")
                 self.gate.open_gate()
 
                 # when vehicle passing the gate, loop to first step
                 if self.ultrasonic.is_vehicle_pass():
-                    Helper.log_print("vehicle passing the gate")
+                    Helper.log_print("Vehicle passing the gate")
                     self.gate.close_gate()
             except Exception as e:
                 Helper.log_print(e)
@@ -62,6 +63,7 @@ class Main():
             # 1. print waiting for QR Scan message
             self.lcd.waiting_message()
             try:
+                Helper.log_print("Waiting for QR")
                 scanned_string = self.usb_scanner.readQRCode()
                 scanned_string = base64.b64decode(scanned_string)
                 # take scanned string > check the command (checkin, checkout)
@@ -69,39 +71,40 @@ class Main():
                 # if checkout, check expired time first before open the gate
                 # when checkout and expired time > time_now, print expired message
                 json_data = Helper.parse_json_qrcode(scanned_string)
-                if json_data['parking_type'] not in ['recheckin', 'checkout']:
+                parking_type = json_data['parking_type']
+                if parking_type not in ['recheckin', 'checkout']:
                     continue
                 
-                self.db.insert_data({'parking_type': json_data['parking_type'], 'code': json_data['code']})
+                self.db.insert_data({'parking_type': parking_type, 'code': json_data['code']})
 
-                if json_data['parking_type'] == 'recheckin':
-                    self.mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
-                    # print message selamat datang
-                    self.lcd.scan_success_message(gate=0)
-                    Helper.log_print("recheckin success")
+                if parking_type == 'recheckin':
+                    self.mqtt.publish_command(MACHINE_ID, parking_type, json_data)
+                    self.lcd.recheckin_message()
+                    Helper.log_print("Recheckin success")
                     continue
-                else:
-                    expired_time = Helper.parse_datetime(json_data['expired'])
-                    expired_timestamp = Helper.parse_to_timestamp(date=expired_time)
-                    Helper.log_print(f"expired_time: {expired_timestamp}")
-                    now_timestamp = Helper.parse_to_timestamp()
-                    Helper.log_print(f"current_time: {now_timestamp}")
-                    # If expired_timestamp already passed by now_timestamp
-                    if expired_timestamp < now_timestamp:
-                        self.lcd.expired_message()
-                        Helper.log_print("expired")
-                        time.sleep(5)
-                        # and continue to first step waiting for QR Scan
-                        continue
 
-                    self.lcd.scan_success_message(gate=1)
-                    self.mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
-                    Helper.log_print("checkout success")
-                    self.gate.open_gate()
+                expired_time = Helper.parse_datetime(json_data['expired'])
+                expired_timestamp = Helper.parse_to_timestamp(date=expired_time)
+                Helper.log_print(f"expired_time: {expired_timestamp}")
+                now_timestamp = Helper.parse_to_timestamp()
+                Helper.log_print(f"current_time: {now_timestamp}")
+                # If expired_timestamp already passed by now_timestamp
+                if expired_timestamp < now_timestamp:
+                    Helper.log_print(f"Expired < Current: {expired_timestamp} < {now_timestamp}")
+                    self.lcd.expired_message()
+                    Helper.log_print("QR Expired")
+                    time.sleep(5)
+                    # and continue to first step waiting for QR Scan
+                    continue
+
+                self.lcd.scan_success_message(gate=1)
+                self.mqtt.publish_command(MACHINE_ID, parking_type, json_data)
+                Helper.log_print("Checkout success")
+                self.gate.open_gate()
 
                 # when vehicle passing the gate, loop to first step
                 if self.ultrasonic.is_vehicle_pass():
-                    Helper.log_print("vehicle passing the gate")
+                    Helper.log_print("Vehicle passing the gate")
                     self.gate.close_gate()
             except Exception as e:
                 Helper.log_print(e)

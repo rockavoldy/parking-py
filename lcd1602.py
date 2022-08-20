@@ -53,6 +53,9 @@ class LCD1602():
         """ Expired message """
         self.print_message("Waktu pembayaran anda telah habis!, Silahkan ikuti instruksi di HP anda!")
 
+    def recheckin_message(self):
+        self.print_message("Silahkan ikuti instruksi di HP anda!")
+
     def waiting_payment_message(self):
         """ Waiting for Payment message """
         self.print_message("Silahkan lakukan pembayaran dengan QRIS yang telah kami kirimkan!")
