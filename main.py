@@ -27,11 +27,9 @@ class Main():
         self.db = DB("scanned.db")
 
         Helper.log_print("initilaize gate")
-        # uncomment one of initialization below to choose between gate entry and exit
-        # self.gate_entry()
-        # self.gate_exit()
 
     def gate_entry(self):
+        Helper.log_print("Gate entry ready!")
         while True:
             # 1. print waiting for QR Scan message
             self.lcd.waiting_message()
@@ -59,6 +57,7 @@ class Main():
                 Helper.log_print(e)
     
     def gate_exit(self):
+        Helper.log_print("Gate Exit ready!")
         while True:
             # 1. print waiting for QR Scan message
             self.lcd.waiting_message()
@@ -105,3 +104,6 @@ class Main():
 
 if __name__ == '__main__':
     main = Main()
+    # uncomment one of initialization below to choose between gate entry and exit
+    # main.gate_entry()
+    # main.gate_exit()
