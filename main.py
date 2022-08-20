@@ -43,7 +43,7 @@ class Main():
                 json_data = Helper.parse_json_qrcode(scanned_string)
                 if not json_data['parking_type'] == "checkin":
                     continue
-                self.db.insert_data(json_data)
+                self.db.insert_data({'parking_type': json_data['parking_type'], 'code': json_data['code']})
                 self.mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
                 # print message selamat datang
                 self.lcd.scan_success_message(gate=0)
@@ -72,16 +72,8 @@ class Main():
                 json_data = Helper.parse_json_qrcode(scanned_string)
                 if json_data['parking_type'] not in ['recheckin', 'checkout']:
                     continue
-                else:
-                    self.db.insert_data(json_data)
-                    expired_time = Helper.parse_datetime(json_data['expired'])
-                    if Helper.parse_to_timestamp(date=expired_time) > Helper.parse_to_timestamp():
-                        # When expired time is more than current time, print expired message
-                        self.lcd.expired_message()
-                        Helper.log_print("expired")
-                        time.sleep(5)
-                        # and continue to first step waiting for QR Scan
-                        continue
+                
+                self.db.insert_data({'parking_type': json_data['parking_type'], 'code': json_data['code']})
 
                 if json_data['parking_type'] == 'recheckin':
                     self.mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
@@ -91,7 +83,7 @@ class Main():
                     continue
                 else:
                     expired_time = Helper.parse_datetime(json_data['expired'])
-                    if Helper.parse_to_timestamp(date=expired_time) < Helper.parse_to_timestamp():
+                    if Helper.parse_to_timestamp(date=expired_time) > Helper.parse_to_timestamp():
                         # When expired time is more than current time, print expired message
                         self.lcd.expired_message()
                         Helper.log_print("expired")
