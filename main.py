@@ -79,7 +79,7 @@ class Main():
                 if parking_type not in ['recheckin', 'checkout']:
                     continue
 
-                if self.db.get_count_data(code=json_data['code']) == 0:
+                if self.db.get_count_data(code=json_data['code']) > 0:
                     Helper.log_print("Invalid QR Code for recheckin or checkout")
                     self.lcd.invalid_qr_message()
                     continue
