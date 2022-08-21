@@ -25,12 +25,15 @@ class LCD1602():
             return False
 
         self._lcd.clear()
-        if len(msg) < 16:
+        if len(msg) <= 16:
             self._lcd.print_line(msg, 0)
             return True
+        
+        if len(msg) > 16:
+            # print 16 character on the first line, and the rest on the second line
+            self._lcd.print_line(msg[:16], 0)
+            self._lcd.print_line(msg[16:], 1)
 
-        self._lcd.shift(direction='LEFT', move_display=False)
-        self._lcd.print(msg)
         # add delay, easier to read
         time.sleep(0.13)
 
