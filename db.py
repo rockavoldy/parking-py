@@ -18,3 +18,17 @@ class DB():
 
         self.conn.commit()
         cur.close()
+
+    def get_count_data(self, code=False):
+        if not code:
+            return 0
+        cur = self.conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM scanned_data WHERE code = ?", (str(code),))
+        return cur.fetchone()[0]
+
+    def get_data(self, code=False):
+        if not code:
+            return 0
+        cur = self.conn.cursor()
+        cur.execute("SELECT * FROM scanned_data")
+        return cur.fetchall()

@@ -56,6 +56,9 @@ class LCD1602():
     def recheckin_message(self):
         self.print_message("Silahkan ikuti instruksi di HP anda!")
 
+    def invalid_qr_message(self):
+        self.print_message("QR Code anda invalid, silahkan generate kembali!")
+
     def waiting_payment_message(self):
         """ Waiting for Payment message """
         self.print_message("Silahkan lakukan pembayaran dengan QRIS yang telah kami kirimkan!")

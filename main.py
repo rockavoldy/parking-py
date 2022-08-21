@@ -42,6 +42,10 @@ class Main():
                 json_data = Helper.parse_json_qrcode(scanned_string)
                 if not json_data['parking_type'] == "checkin":
                     continue
+                if self.db.get_count_data(code=json_data['code']) == 0:
+                    Helper.log_print("Invalid QR Code for checkin")
+                    self.lcd.invalid_qr_message()
+                    continue
                 self.db.insert_data({'parking_type': json_data['parking_type'], 'code': json_data['code']})
                 self.mqtt.publish_command(MACHINE_ID, json_data['parking_type'], json_data)
                 # print message selamat datang
@@ -74,7 +78,11 @@ class Main():
                 parking_type = json_data['parking_type']
                 if parking_type not in ['recheckin', 'checkout']:
                     continue
-                
+
+                if self.db.get_count_data(code=json_data['code']) == 0:
+                    Helper.log_print("Invalid QR Code for recheckin or checkout")
+                    self.lcd.invalid_qr_message()
+                    continue
                 self.db.insert_data({'parking_type': parking_type, 'code': json_data['code']})
 
                 if parking_type == 'recheckin':
