@@ -24,12 +24,12 @@ class LCD1602():
         if not msg:
             return False
 
+        self._lcd.clear()
         if len(msg) < 16:
             self._lcd.print_line(msg, 0)
             return True
 
-        self._lcd.shift(direction='LEFT', move_display=True)
-        self._lcd.move_cursor(0, 0)
+        self._lcd.shift(direction='LEFT', move_display=False)
         self._lcd.print(msg)
         # add delay, easier to read
         time.sleep(0.13)
