@@ -42,7 +42,7 @@ class Main():
                 json_data = Helper.parse_json_qrcode(scanned_string)
                 if not json_data['parking_type'] == "checkin":
                     continue
-                if self.db.get_count_data(code=json_data['code']) == 0:
+                if self.db.get_count_data(code=json_data['code'], parking_type=json_data['parking_type']) == 0:
                     Helper.log_print("Invalid QR Code for checkin")
                     self.lcd.invalid_qr_message()
                     continue
@@ -79,7 +79,7 @@ class Main():
                 if parking_type not in ['recheckin', 'checkout']:
                     continue
 
-                if self.db.get_count_data(code=json_data['code']) > 0:
+                if self.db.get_count_data(code=json_data['code'], parking_type=json_data['parking_type']) > 0:
                     Helper.log_print("Invalid QR Code for recheckin or checkout")
                     self.lcd.invalid_qr_message()
                     continue
