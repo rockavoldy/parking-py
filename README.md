@@ -15,7 +15,10 @@ dtoverlay=disable-bt
 4. Activate virtualenv `pyenv activate parking`
 5. Confirm the python version using `python --version`
 6. Install `requirements.txt` with pip `pip install -r requirements.txt`
-7. Run main.py
+7. Run main.py with the env data passed
+    ```sh
+    env PARK_MQTT_HOST='localhost' PARK_MQTT_PORT=1883 PARK_MQTT_USER='testparking' PARK_MQTT_PASS='123456' python3 main.py
+    ```
 
 ## Some notes on the design
 ### Dashboard and communication

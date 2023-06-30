@@ -8,8 +8,13 @@ from db import DB
 
 import time
 import base64
+import os
 
 MACHINE_ID = "TEST01"
+MQTT_HOST = os.getenv('PARK_MQTT_HOST', 'localhost')
+MQTT_PORT = os.getenv('PARK_MQTT_PORT', 1883)
+MQTT_USER = os.getenv('PARK_MQTT_USER', 'testparking')
+MQTT_PASS = os.getenv('PARK_MQTT_PASS', '123456')
 
 class Main():
     def __init__(self):
@@ -23,7 +28,7 @@ class Main():
         # i think it's ok to use the default one /dev/ttyAMA0
         self.gate = Gate()
         Helper.log_print("Parking IoT start")
-        self.mqtt = Mqtt(host="172.104.182.166", port=1883, keepalive=60, username="testparking", password="123456")
+        self.mqtt = Mqtt(host=MQTT_HOST, port=MQTT_PORT, keepalive=60, username=MQTT_USER, password=MQTT_PASS)
         self.db = DB("scanned.db")
 
         Helper.log_print("initilaize gate")
